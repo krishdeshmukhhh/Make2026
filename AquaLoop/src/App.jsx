@@ -1,9 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import Simulation from './pages/Simulation';
-import Analytics from './pages/Analytics';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import Simulation from "./pages/Simulation";
+import Analytics from "./pages/Analytics";
+import ModelDashboard from "./pages/ModelDashboard";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/simulation" element={<Simulation />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/model" element={<ModelDashboard />} />
           </Routes>
         </main>
         <Footer />
