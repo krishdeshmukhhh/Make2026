@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-        <footer className="w-full bg-primary pt-24 pb-12 px-6 md:px-16 rounded-t-[4rem] -mt-16 relative z-40 text-text-light">
+        <footer className="w-full bg-primary pt-24 pb-12 px-6 md:px-16 relative z-40 text-text-light">
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-12 border-b border-text-light/10 pb-16">
                     <div className="md:col-span-6 flex flex-col lg:pr-12">

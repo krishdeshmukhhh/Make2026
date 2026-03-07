@@ -102,14 +102,6 @@ export default function Protocol() {
                             ease: "none"
                         })
                     });
-                } else {
-                    ScrollTrigger.create({
-                        trigger: card,
-                        start: "top 10%",
-                        pin: true,
-                        pinSpacing: true,
-                        end: "+=50%"
-                    });
                 }
             });
         }, containerRef);
@@ -121,7 +113,7 @@ export default function Protocol() {
     }, []);
 
     return (
-        <section id="protocol" ref={containerRef} className="relative w-full bg-background mt-[-3rem] pt-32 pb-40 rounded-t-[3rem] z-30">
+        <section id="protocol" ref={containerRef} className="relative w-full bg-background mt-[-3rem] pt-32 pb-16 rounded-t-[3rem] z-30">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="mb-20 text-center">
                     <h2 className="font-heading font-bold text-4xl md:text-5xl text-primary tracking-tight">
