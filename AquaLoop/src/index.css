@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-text-dark font-heading antialiased selection:bg-accent selection:text-primary;
+    overflow-x: hidden;
+  }
+}
+
+/* Noise Filter Application */
+#noise-overlay {
+  filter: url(#noiseFilter);
+  /* Optional: try mix-blend-mode: multiply if needed for light background, but normal is fine */
+}
+
+/* Custom Micro-Interactions */
+.btn-magnetic {
+  @apply relative overflow-hidden transition-transform duration-300;
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btn-magnetic:hover {
+  transform: scale(1.03);
+}
+
+.link-hover {
+  @apply transition-transform duration-300 hover:-translate-y-[1px];
+}

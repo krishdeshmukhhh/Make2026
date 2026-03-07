@@ -1,0 +1,52 @@
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+
+export default function Hero() {
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.from('.hero-elem', {
+                y: 40,
+                opacity: 0,
+                duration: 1.2,
+                stagger: 0.15,
+                ease: 'power3.out',
+                delay: 0.2
+            });
+        }, containerRef);
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <section ref={containerRef} className="relative h-[100dvh] w-full flex flex-col justify-end pb-24 px-6 md:px-16 overflow-hidden">
+            {/* Background Image - Luxury Interior / Dark Marble */}
+            <div
+                className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607688969-a5bfcd64efac?q=80&w=2574&auto=format&fit=crop')" }}
+            />
+            {/* Heavy primary-to-black gradient overlay */}
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/20" />
+
+            {/* Content pushed to bottom-left */}
+            <div className="relative z-20 max-w-4xl hero-content">
+                <h1 className="flex flex-col gap-2">
+                    <span className="hero-elem font-heading font-bold text-4xl md:text-6xl text-text-light tracking-tight">
+                        Water reuse meets
+                    </span>
+                    <span className="hero-elem font-drama italic text-7xl md:text-9xl text-accent -ml-1">
+                        Precision.
+                    </span>
+                </h1>
+                <p className="hero-elem font-heading text-lg md:text-xl text-text-light/80 max-w-2xl mt-8 tracking-tighter loading-relaxed">
+                    AquaLoop — smart water reuse for semiconductor fabs, turning single‑use rinse water into a closed, data‑driven loop.
+                </p>
+                <div className="hero-elem mt-12">
+                    <a href="#demo" className="inline-block btn-magnetic bg-accent text-primary px-8 py-4 rounded-full font-heading font-bold text-lg hover:bg-opacity-90 transition-colors">
+                        See the live demo
+                    </a>
+                </div>
+            </div>
+        </section>
+    );
+}
