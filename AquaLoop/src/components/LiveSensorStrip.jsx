@@ -4,26 +4,26 @@ import { LineChart, Line, YAxis, ResponsiveContainer } from 'recharts';
 function MetricCard({ title, value, unit, range, status, history, dataKey }) {
     const getStatusColor = (s) => {
         switch (s) {
-            case 'good': return 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]';
-            case 'warn': return 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]';
-            case 'crit': return 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]';
-            default: return 'bg-text-light/20';
+            case 'good': return 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]';
+            case 'warn': return 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]';
+            case 'crit': return 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]';
+            default: return 'bg-text-dark/20';
         }
     };
 
     return (
-        <div className="bg-primary border border-text-dark/10 rounded-2xl p-5 shadow-inner flex flex-col hover:-translate-y-[2px] transition-transform duration-300">
+        <div className="bg-white border border-text-dark/10 rounded-2xl p-5 shadow-sm flex flex-col hover:-translate-y-[2px] transition-transform duration-300">
             <div className="flex justify-between items-start mb-4">
-                <h4 className="font-heading font-medium text-text-light/60 text-xs uppercase tracking-wider">{title}</h4>
+                <h4 className="font-heading font-medium text-text-dark/60 text-xs uppercase tracking-wider">{title}</h4>
                 <div className={`w-2 h-2 rounded-full ${getStatusColor(status)} animate-pulse`} />
             </div>
 
             <div className="flex items-end gap-2 mb-2">
-                <span className="font-data text-3xl font-bold text-text-light">{value}</span>
-                <span className="font-heading text-sm text-text-light/40 mb-1">{unit}</span>
+                <span className="font-data text-3xl font-bold text-text-dark">{value}</span>
+                <span className="font-heading text-sm text-text-dark/40 mb-1">{unit}</span>
             </div>
 
-            <div className="font-heading text-[10px] text-text-light/30 mb-4 tracking-wider">
+            <div className="font-heading text-[10px] text-text-dark/40 mb-4 tracking-wider">
                 TARGET: {range}
             </div>
 
@@ -53,7 +53,7 @@ export default function LiveSensorStrip() {
     const current = latestByProcess[processId];
     const history = historyByProcess[processId] || [];
 
-    if (!current) return <div className="h-40 flex items-center justify-center text-text-light">Waiting for sensor data...</div>;
+    if (!current) return <div className="h-40 flex items-center justify-center text-text-dark/60 font-heading">Waiting for sensor data...</div>;
 
     // Determine statuses
     const turbStatus = current.turbidity < 1.0 ? 'good' : current.turbidity < 3.0 ? 'warn' : 'crit';
