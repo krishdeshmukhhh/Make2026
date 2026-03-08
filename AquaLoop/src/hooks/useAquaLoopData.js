@@ -127,7 +127,7 @@ function notifyBrowser(alert) {
         tag: `aqualoop-${alert.id}`,
         requireInteraction: alert.severity === "critical",
       });
-    } catch (_) {}
+    } catch (_) { }
     return;
   }
   if (Notification.permission === "default") {
@@ -138,7 +138,7 @@ function notifyBrowser(alert) {
             body: `${alert.metric} ${alert.severity}: ${alert.value}${alert.unit}`,
             tag: `aqualoop-${alert.id}`,
           });
-        } catch (_) {}
+        } catch (_) { }
       }
     });
   }
