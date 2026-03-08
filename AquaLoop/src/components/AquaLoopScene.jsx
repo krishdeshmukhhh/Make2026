@@ -78,9 +78,9 @@ function SensingTank({ reading }) {
     // Target color based on class
     const getTargetColor = () => {
         if (!reading) return new THREE.Color("#60A5FA"); // Default blue
-        if (reading.class === 'min') return new THREE.Color("#60A5FA"); // blue-400
-        if (reading.class === 'med') return new THREE.Color("#F59E0B"); // amber-500
-        return new THREE.Color("#EF4444"); // red-500
+        if (reading.class === 'min') return new THREE.Color("#22C55E"); // green-500 (OPS)
+        if (reading.class === 'med') return new THREE.Color("#F59E0B"); // amber-500 (MID)
+        return new THREE.Color("#EF4444"); // red-500 (BAD)
     };
 
     useFrame((state, delta) => {

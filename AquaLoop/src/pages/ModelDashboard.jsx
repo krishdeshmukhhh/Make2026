@@ -21,12 +21,13 @@ import {
 } from "recharts";
 import modelData from "../data/modelResults.json";
 
-/* ───── palette ───── */
+/* ───── palette & labels ───── */
 const CLASS_COLORS = {
-  max: "#EF4444", // red
-  med: "#F59E0B", // amber
-  min: "#60A5FA", // blue
+  max: "#EF4444", // red — BAD
+  med: "#F59E0B", // amber — MID
+  min: "#22C55E", // green — OPS
 };
+const CLASS_LABELS = { min: "OPS", med: "MID", max: "BAD" };
 const ACCENT = "#C9A84C";
 const PRIMARY = "#0D0D12";
 
@@ -81,7 +82,7 @@ function ScatterTooltip({ active, payload }) {
           style={{ background: CLASS_COLORS[d.predicted] }}
         />
         <span className="uppercase font-bold tracking-wider">
-          {d.predicted}
+          {CLASS_LABELS[d.predicted] ?? d.predicted}
         </span>
         <span className="opacity-40 ml-auto">{d.confidence}%</span>
       </div>
@@ -95,7 +96,7 @@ function ScatterTooltip({ active, payload }) {
         <span className="opacity-60">Temp</span>
         <span>{d.temp}°C</span>
         <span className="opacity-60">Actual</span>
-        <span className="uppercase">{d.actual}</span>
+        <span className="uppercase">{CLASS_LABELS[d.actual] ?? d.actual}</span>
       </div>
     </div>
   );
@@ -572,7 +573,7 @@ export default function ModelDashboard() {
                     : "bg-primary/5 text-text-dark/60 hover:text-primary border border-text-dark/10"
                 }`}
               >
-                {c === "all" ? "All" : c.toUpperCase()}
+                {c === "all" ? "All" : (CLASS_LABELS[c] ?? c)}
               </button>
             ))}
           </div>
@@ -632,7 +633,7 @@ export default function ModelDashboard() {
                 {modelData.classLabels.map((cls) => (
                   <Scatter
                     key={cls}
-                    name={cls.toUpperCase()}
+                    name={CLASS_LABELS[cls] ?? cls}
                     data={scatterPoints.filter((p) => p.predicted === cls)}
                     fill={CLASS_COLORS[cls]}
                     opacity={0.7}
@@ -686,7 +687,7 @@ export default function ModelDashboard() {
                             color: CLASS_COLORS[p.actual],
                           }}
                         >
-                          {p.actual}
+                          {CLASS_LABELS[p.actual] ?? p.actual}
                         </span>
                       </td>
                       <td className="py-3 px-3">
@@ -697,7 +698,7 @@ export default function ModelDashboard() {
                             color: CLASS_COLORS[p.predicted],
                           }}
                         >
-                          {p.predicted}
+                          {CLASS_LABELS[p.predicted] ?? p.predicted}
                         </span>
                       </td>
                       <td className="py-3 px-3">

@@ -29,7 +29,7 @@ export default function Simulation() {
 
             <JudgePanel bullets={[
                 "Live sensor readings from our Arduino prototype rig.",
-                "Real-time routing decisions (min / med / max classification).",
+                "Real-time routing decisions (OPS / MID / BAD classification).",
                 "Watch tanks fill and reset based on batch volume."
             ]} />
         </div>

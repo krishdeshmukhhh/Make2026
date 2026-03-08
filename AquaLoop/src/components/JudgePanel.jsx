@@ -8,7 +8,7 @@ export default function JudgePanel({ bullets }) {
 
     const defaultBullets = [
         "Live sensor readings from our Arduino prototype rig.",
-        "Real-time routing decisions (min / med / max classification).",
+        "Real-time routing decisions (OPS / MID / BAD classification).",
         "Calculated reuse %, gallons saved vs. single-use baseline."
     ];
 

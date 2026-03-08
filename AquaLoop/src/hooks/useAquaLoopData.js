@@ -115,6 +115,35 @@ function detectSpikes(reading) {
   return alerts;
 }
 
+// ─── Browser notifications (best for when user is in another tab or app) ───
+// Best practice: in-app toasts (AlertToast) + browser notifications so users
+// see threshold alerts even when the dashboard tab isn’t focused.
+function notifyBrowser(alert) {
+  if (typeof window === "undefined" || !window.Notification) return;
+  if (Notification.permission === "granted") {
+    try {
+      new Notification(`AquaLoop: ${alert.severity}`, {
+        body: `${alert.metric} ${alert.severity}: ${alert.value}${alert.unit}`,
+        tag: `aqualoop-${alert.id}`,
+        requireInteraction: alert.severity === "critical",
+      });
+    } catch (_) {}
+    return;
+  }
+  if (Notification.permission === "default") {
+    Notification.requestPermission().then((p) => {
+      if (p === "granted" && alert) {
+        try {
+          new Notification(`AquaLoop: ${alert.severity}`, {
+            body: `${alert.metric} ${alert.severity}: ${alert.value}${alert.unit}`,
+            tag: `aqualoop-${alert.id}`,
+          });
+        } catch (_) {}
+      }
+    });
+  }
+}
+
 // ─── Context-based provider so data persists across route changes ───
 
 const AquaLoopContext = createContext(null);
@@ -150,7 +179,7 @@ export function AquaLoopProvider({ children, maxHistory = 100 }) {
         };
       });
 
-      // Detect spikes and create alerts
+      // Detect spikes and create alerts (in-app toasts + browser notifications)
       const newSpikes = detectSpikes(reading);
       if (newSpikes.length > 0) {
         const timestamped = newSpikes.map((spike) => ({
@@ -159,6 +188,9 @@ export function AquaLoopProvider({ children, maxHistory = 100 }) {
           timestamp: reading.timestamp,
         }));
         setAlerts((prev) => [...timestamped, ...prev].slice(0, 20)); // keep last 20
+        // Browser notification for first/new spike so user sees it when tab is in background
+        const first = timestamped[0];
+        if (first) notifyBrowser(first);
       }
     },
     [maxHistory],
