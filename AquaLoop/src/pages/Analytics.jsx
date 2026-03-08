@@ -3,11 +3,6 @@ import { useAquaLoopData } from "../hooks/useAquaLoopData";
 import {
   LineChart,
   Line,
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -31,7 +26,7 @@ function ChartCard({ title, children }) {
 }
 
 export default function Analytics() {
-  const { historyByProcess, getAggregatedStats, availableProcesses } =
+  const { historyByProcess, getAggregatedStats, availableProcesses, alerts, isConnected } =
     useAquaLoopData();
   const [selectedProcess, setSelectedProcess] = useState("processA");
   const [selectedRange, setSelectedRange] = useState("1h");
@@ -112,14 +107,7 @@ export default function Analytics() {
     };
   }, [selectedProcess, selectedRange, historyByProcess, getAggregatedStats]);
 
-  // Format data for Recharts Pie
-    const pieData = [
-        { name: "OPS", value: stats.classVolumes.min, color: "#22C55E" },   // green-500
-        { name: "MID", value: stats.classVolumes.med, color: "#F59E0B" },  // amber-500
-        { name: "BAD", value: stats.classVolumes.max, color: "#EF4444" },  // red-500
-    ].filter((d) => d.value > 0);
-
-  // Custom Tooltip for charts matching design system
+    // Custom Tooltip for charts matching design system
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -307,72 +295,84 @@ export default function Analytics() {
               </ResponsiveContainer>
             </ChartCard>
 
-            {/* Volume Distribution & Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <ChartCard title="Routing Distribution">
-                {pieData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        cx="50%"
-                        cy="45%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                        stroke="none"
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend
-                        wrapperStyle={{
-                          fontSize: "12px",
-                          fontFamily: "Inter",
-                        }}
+            {/* Overview dashboard: notifications, system status, what to watch, volume stats */}
+            <div className="bg-white border border-text-dark/20 rounded-[2rem] p-6 shadow-sm">
+              <h3 className="font-heading font-bold text-lg text-primary mb-6">
+                Overview
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <div className="font-heading text-[10px] uppercase tracking-widest text-text-dark/50 mb-1">
+                      Last notification
+                    </div>
+                    <p className="font-data text-sm text-text-dark">
+                      {alerts.length > 0
+                        ? new Date(alerts[0].timestamp).toLocaleString(undefined, {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "No recent alerts"}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="font-heading text-[10px] uppercase tracking-widest text-text-dark/50 mb-1">
+                      System status
+                    </div>
+                    <p className="font-data text-sm flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          isConnected ? "bg-green-500" : "bg-red-500"
+                        }`}
                       />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-text-dark/40 font-heading">
-                    Accumulating volume...
-                  </div>
-                )}
-              </ChartCard>
-
-              <ChartCard title="Efficiency Overview">
-                <div className="flex flex-col h-full justify-center gap-6 pb-8">
-                  <div>
-                    <div className="font-heading text-xs text-text-dark/60 uppercase tracking-wider mb-2">
-                      Total Freshwater Saved
-                    </div>
-                    <div className="font-data text-4xl font-bold text-accent">
-                      {(
-                        stats.classVolumes.min + stats.classVolumes.med || 0
-                      ).toFixed(1)}{" "}
-                      <span className="text-xl text-text-dark/40">L</span>
-                    </div>
+                      {isConnected ? "Systems nominal" : "Disconnected"}
+                    </p>
                   </div>
                   <div>
-                    <div className="font-heading text-xs text-text-dark/60 uppercase tracking-wider mb-2">
-                      Reuse Percentage
+                    <div className="font-heading text-[10px] uppercase tracking-widest text-text-dark/50 mb-1">
+                      Watch
                     </div>
-                    <div className="font-data text-4xl font-bold text-primary">
-                      {stats.totalInVolume > 0
-                        ? (
-                            ((stats.classVolumes.min + stats.classVolumes.med) /
-                              stats.totalInVolume) *
-                            100
-                          ).toFixed(1)
-                        : "0.0"}
-                      %
+                    <p className="font-data text-sm text-text-dark">
+                      {alerts.length > 0
+                        ? `${alerts[0].metric} ${alerts[0].severity} (${alerts[0].value}${alerts[0].unit})`
+                        : "All within range"}
+                    </p>
+                  </div>
+                </div>
+                <div className="md:col-span-2 flex flex-col justify-center">
+                  <div className="font-heading text-[10px] uppercase tracking-widest text-text-dark/50 mb-4">
+                    Volume this period
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-4 text-center">
+                      <div className="font-data text-2xl font-bold text-green-700">
+                        {(stats.classVolumes.min || 0).toFixed(1)}
+                      </div>
+                      <div className="font-heading text-xs text-text-dark/70 mt-1">
+                        Reused (L)
+                      </div>
+                    </div>
+                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-center">
+                      <div className="font-data text-2xl font-bold text-amber-700">
+                        {(stats.classVolumes.med || 0).toFixed(1)}
+                      </div>
+                      <div className="font-heading text-xs text-text-dark/70 mt-1">
+                        Cooled (L)
+                      </div>
+                    </div>
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-center">
+                      <div className="font-data text-2xl font-bold text-red-700">
+                        {(stats.classVolumes.max || 0).toFixed(1)}
+                      </div>
+                      <div className="font-heading text-xs text-text-dark/70 mt-1">
+                        Wasted (L)
+                      </div>
                     </div>
                   </div>
                 </div>
-              </ChartCard>
+              </div>
             </div>
           </div>
 
@@ -446,10 +446,10 @@ export default function Analytics() {
                           </td>
                           <td className="py-4 px-2 font-heading text-xs text-text-dark/80 font-medium whitespace-nowrap">
                             {row.class === "min"
-                              ? "OPS"
+                              ? "Reuse"
                               : row.class === "med"
-                                ? "MID"
-                                : "BAD"}
+                                ? "Cool"
+                                : "Waste"}
                           </td>
                         </tr>
                       ))}
@@ -469,7 +469,7 @@ export default function Analytics() {
       <JudgePanel
         bullets={[
           "Process-level reuse % and gallons saved vs. single-use baseline.",
-          "Routing distribution across high-grade, utility, and discharge.",
+          "Overview: last notification, system status, volume reused / cooled / wasted.",
           "Historical trends — switch time ranges to see long-term patterns.",
         ]}
       />
