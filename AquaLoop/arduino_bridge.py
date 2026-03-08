@@ -64,7 +64,7 @@ def determine_class(turbidity, tds, temp, ph):
     else:
         return 'max'  # Treatment / Discharge
 
-async def read_serial_and_broadcast(websocket, path='/ws/aqualoop'):
+async def read_serial_and_broadcast(websocket):
     print(f"\n[+] Frontend connected! Opening {SERIAL_PORT} at {BAUD_RATE} baud...")
     
     try:
