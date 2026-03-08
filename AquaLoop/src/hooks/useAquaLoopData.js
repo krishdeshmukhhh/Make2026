@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-const USE_MOCK_DATA = true; // Set to false to use WebSocket
+const USE_MOCK_DATA = false; // Set to false to use WebSocket
 const WS_URL = "ws://localhost:8080/ws/aqualoop"; // Replace with actual backend WS URL
 
 const PROCESS_IDS = ["processA", "processB", "processC"];
