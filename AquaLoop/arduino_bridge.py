@@ -5,18 +5,64 @@ import json
 import time
 
 # --- CONFIGURATION ---
-SERIAL_PORT = 'COM3'  # Change this to your Arduino's serial port (e.g., /dev/ttyACM0 on Mac/Linux)
-BAUD_RATE = 9600
+SERIAL_PORT = '/dev/cu.usbmodem11101'  # Change this to your Arduino's serial port (e.g., /dev/ttyACM0 on Mac/Linux)
+BAUD_RATE = 115200
 WS_HOST = 'localhost'
 WS_PORT = 8080
 # ---------------------
 
-def determine_class(turbidity, tds):
-    if turbidity < 1.0 and tds < 50:
-        return 'min' # High-grade reuse
-    if turbidity < 5.0 and tds < 200:
-        return 'med' # Utility Loop
-    return 'max' # Discharge
+def determine_class(turbidity, tds, temp, ph):
+    """
+    Multi-feature water quality scoring.
+    Returns 'min' (High-grade Reuse), 'med' (Utility Loop), or 'max' (Treatment/Discharge).
+
+    Scoring uses WHO-aligned thresholds:
+      - Turbidity: < 1 NTU excellent, < 4 NTU acceptable, > 4 degraded
+      - TDS: < 300 ppm excellent, < 500 acceptable (WHO limit), > 500 poor
+      - Temp: 15-30°C ideal, outside that range penalized
+      - pH: 6.5-8.5 safe, outside that range penalized
+    """
+    score = 0.0
+
+    # --- Turbidity (40% weight) ---
+    if turbidity < 1.0:
+        score += 40       # excellent clarity
+    elif turbidity < 4.0:
+        score += 25       # acceptable
+    elif turbidity < 7.0:
+        score += 10       # degraded
+    # else: 0 — very turbid
+
+    # --- TDS (25% weight) ---
+    if tds < 300:
+        score += 25       # excellent
+    elif tds < 500:
+        score += 18       # normal tap water (WHO safe)
+    elif tds < 800:
+        score += 8        # elevated
+    # else: 0 — very high
+
+    # --- Temperature (15% weight) ---
+    if 15 <= temp <= 30:
+        score += 15       # ideal process range
+    elif 10 <= temp <= 40:
+        score += 8        # acceptable
+    # else: 0 — extreme
+
+    # --- pH (20% weight) ---
+    if 6.5 <= ph <= 8.5:
+        score += 20       # safe
+    elif 5.5 <= ph <= 9.5:
+        score += 10       # borderline
+    # else: 0 — dangerous
+
+    # --- Classify ---
+    if score >= 70:
+        return 'min'  # High-grade Reuse
+    elif score >= 40:
+        return 'med'  # Utility Loop
+    else:
+        return 'max'  # Treatment / Discharge
 
 async def read_serial_and_broadcast(websocket, path='/ws/aqualoop'):
     print(f"\n[+] Frontend connected! Opening {SERIAL_PORT} at {BAUD_RATE} baud...")
@@ -60,7 +106,7 @@ async def read_serial_and_broadcast(websocket, path='/ws/aqualoop'):
                             "tds": tds,
                             "temp": temp,
                             "ph": ph,
-                            "class": determine_class(turbidity, tds),
+                            "class": determine_class(turbidity, tds, temp, ph),
                             "inFlowLpm": in_flow,
                             "outFlowLpm": out_flow
                         }
