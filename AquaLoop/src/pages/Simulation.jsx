@@ -1,5 +1,6 @@
 import AquaLoopScene from '../components/AquaLoopScene';
 import LiveSensorStrip from '../components/LiveSensorStrip';
+import JudgePanel from '../components/JudgePanel';
 
 export default function Simulation() {
     return (
@@ -25,6 +26,12 @@ export default function Simulation() {
                 </div>
                 <LiveSensorStrip />
             </div>
+
+            <JudgePanel bullets={[
+                "Live sensor readings from our Arduino prototype rig.",
+                "Real-time routing decisions (min / med / max classification).",
+                "Watch tanks fill and reset based on batch volume."
+            ]} />
         </div>
     );
 }

@@ -47,6 +47,11 @@ export default function Philosophy() {
             <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary/50 to-primary/80" />
 
             <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+                <div className="font-data text-xs text-accent tracking-[0.2em] uppercase mb-8 flex items-center justify-center gap-3 reveal-line">
+                    <span className="w-8 h-[1px] bg-accent/50 block"></span>
+                    02 — Our Loop
+                    <span className="w-8 h-[1px] bg-accent/50 block"></span>
+                </div>
                 <div className="reveal-line font-heading text-lg md:text-2xl text-text-light/60 mb-10 max-w-3xl mx-auto leading-relaxed">
                     Most fabs focus on linear water consumption and rigid discharge.
                 </div>

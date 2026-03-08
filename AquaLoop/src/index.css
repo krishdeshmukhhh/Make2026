@@ -3,16 +3,44 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-text-dark font-heading antialiased selection:bg-accent selection:text-primary;
     overflow-x: hidden;
+  }
+
+  /* Custom focus ring */
+  *:focus-visible {
+    outline: 2px solid #C9A84C;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #C9A84C40;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C9A84C80;
   }
 }
 
 /* Noise Filter Application */
 #noise-overlay {
   filter: url(#noiseFilter);
-  /* Optional: try mix-blend-mode: multiply if needed for light background, but normal is fine */
 }
 
 /* Custom Micro-Interactions */
@@ -27,4 +55,17 @@
 
 .link-hover {
   @apply transition-transform duration-300 hover:-translate-y-[1px];
+}
+
+/* JudgePanel entrance animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

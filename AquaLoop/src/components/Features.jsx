@@ -31,11 +31,18 @@ export default function Features() {
         <section id="features" ref={containerRef} className="py-40 px-6 md:px-16 bg-background">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-24 feature-card">
+                    <div className="font-data text-xs text-accent tracking-[0.2em] uppercase mb-6 flex items-center gap-3">
+                        <span className="w-8 h-[1px] bg-accent/50 block"></span>
+                        01 — The Problem
+                    </div>
                     <h2 className="font-heading font-bold text-4xl md:text-6xl text-primary tracking-tight">
                         The Logic of <span className="font-drama italic text-accent pr-2">Efficiency.</span>
                     </h2>
                     <p className="font-heading text-lg md:text-xl text-text-dark/70 mt-6 max-w-2xl leading-relaxed">
                         Our hardware-software integration transforms rinse water management from a blind drain into an intelligent, responsive system.
+                    </p>
+                    <p className="font-data text-sm text-accent mt-4 tracking-wide">
+                        Up to 10M gallons/day per fab — most of it used once and drained.
                     </p>
                 </div>
 

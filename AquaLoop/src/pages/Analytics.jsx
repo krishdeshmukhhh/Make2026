@@ -4,6 +4,7 @@ import {
     LineChart, Line, AreaChart, Area, PieChart, Pie, Cell,
     XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import JudgePanel from '../components/JudgePanel';
 
 const TIME_RANGES = ['1h', '24h', '7d', '30d', '3m', '6m', '1y', 'All'];
 
@@ -278,6 +279,12 @@ export default function Analytics() {
 
                 </div>
             </div>
+
+            <JudgePanel bullets={[
+                "Process-level reuse % and gallons saved vs. single-use baseline.",
+                "Routing distribution across high-grade, utility, and discharge.",
+                "Historical trends — switch time ranges to see long-term patterns."
+            ]} />
         </div>
     );
 }

@@ -16,9 +16,9 @@ export default function Footer() {
 
                     <div className="md:col-span-3 flex flex-col gap-4 font-heading text-sm text-text-light/80">
                         <h4 className="font-bold text-text-light/40 uppercase tracking-widest mb-3 text-xs">Platform</h4>
-                        <a href="#features" className="hover:text-accent transition-colors w-max">Features</a>
-                        <a href="#philosophy" className="hover:text-accent transition-colors w-max">Philosophy</a>
-                        <a href="#protocol" className="hover:text-accent transition-colors w-max">Protocol</a>
+                        <a href="/simulation" className="hover:text-accent transition-colors w-max">Simulation</a>
+                        <a href="/analytics" className="hover:text-accent transition-colors w-max">Analytics</a>
+                        <a href="/model" className="hover:text-accent transition-colors w-max">Model</a>
                     </div>
 
                     <div className="md:col-span-3 flex flex-col gap-4 font-heading text-sm text-text-light/80">

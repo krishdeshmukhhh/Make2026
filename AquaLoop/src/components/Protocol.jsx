@@ -116,6 +116,11 @@ export default function Protocol() {
         <section id="protocol" ref={containerRef} className="relative w-full bg-background mt-[-3rem] pt-32 pb-16 rounded-t-[3rem] z-30">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="mb-20 text-center">
+                    <div className="font-data text-xs text-accent tracking-[0.2em] uppercase mb-6 flex items-center justify-center gap-3">
+                        <span className="w-8 h-[1px] bg-accent/50 block"></span>
+                        03 — The Protocol
+                        <span className="w-8 h-[1px] bg-accent/50 block"></span>
+                    </div>
                     <h2 className="font-heading font-bold text-4xl md:text-5xl text-primary tracking-tight">
                         The <span className="font-drama italic text-accent pr-2">Protocol.</span>
                     </h2>
