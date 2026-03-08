@@ -23,7 +23,7 @@ export default function Hero() {
             {/* Background Image - Luxury Interior / Dark Marble */}
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600607688969-a5bfcd64efac?q=80&w=2574&auto=format&fit=crop')" }}
+                style={{ backgroundImage: "url('/semiconductor2.webp')" }}
             />
             {/* Heavy primary-to-black gradient overlay */}
             <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/20" />
@@ -42,7 +42,7 @@ export default function Hero() {
                     AquaLoop — smart water reuse for semiconductor fabs, turning single‑use rinse water into a closed, data‑driven loop.
                 </p>
                 <div className="hero-elem mt-12">
-                    <a href="#demo" className="inline-block btn-magnetic bg-accent text-primary px-8 py-4 rounded-full font-heading font-bold text-lg hover:bg-opacity-90 transition-colors">
+                    <a href="/simulation" className="inline-block btn-magnetic bg-accent text-primary px-8 py-4 rounded-full font-heading font-bold text-lg hover:bg-opacity-90 transition-colors">
                         See the live demo
                     </a>
                 </div>
