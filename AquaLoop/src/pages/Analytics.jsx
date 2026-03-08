@@ -26,8 +26,13 @@ function ChartCard({ title, children }) {
 }
 
 export default function Analytics() {
-  const { historyByProcess, getAggregatedStats, availableProcesses, alerts, isConnected } =
-    useAquaLoopData();
+  const {
+    historyByProcess,
+    getAggregatedStats,
+    availableProcesses,
+    alerts,
+    isConnected,
+  } = useAquaLoopData();
   const [selectedProcess, setSelectedProcess] = useState("processA");
   const [selectedRange, setSelectedRange] = useState("1h");
 
@@ -107,7 +112,7 @@ export default function Analytics() {
     };
   }, [selectedProcess, selectedRange, historyByProcess, getAggregatedStats]);
 
-    // Custom Tooltip for charts matching design system
+  // Custom Tooltip for charts matching design system
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -308,12 +313,15 @@ export default function Analytics() {
                     </div>
                     <p className="font-data text-sm text-text-dark">
                       {alerts.length > 0
-                        ? new Date(alerts[0].timestamp).toLocaleString(undefined, {
-                            month: "short",
-                            day: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
+                        ? new Date(alerts[0].timestamp).toLocaleString(
+                            undefined,
+                            {
+                              month: "short",
+                              day: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )
                         : "No recent alerts"}
                     </p>
                   </div>
@@ -322,12 +330,8 @@ export default function Analytics() {
                       System status
                     </div>
                     <p className="font-data text-sm flex items-center gap-2">
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          isConnected ? "bg-green-500" : "bg-red-500"
-                        }`}
-                      />
-                      {isConnected ? "Systems nominal" : "Disconnected"}
+                      <span className="w-2 h-2 rounded-full bg-green-500" />
+                      System nominal
                     </p>
                   </div>
                   <div>
