@@ -23,7 +23,7 @@ export default function Hero() {
             {/* Background Image - Luxury Interior / Dark Marble */}
             <div
                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('/intelpipes.webp')" }}
+                style={{ backgroundImage: "url('/semiconductor2.webp')" }}
             />
             {/* Heavy primary-to-black gradient overlay */}
             <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary via-primary/80 to-primary/20" />
