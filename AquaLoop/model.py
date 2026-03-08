@@ -1,7 +1,7 @@
 """
 model.py — AquaLoop Water Quality Classifier
 ---------------------------------------------
-Trains a Random Forest on water_quality_dataset.csv
+Trains a Gradient Boosting + Random Forest ensemble on water_quality_dataset.csv
 Matches exact field names from the Arduino WebSocket bridge:
   turbidity, tds, temp, ph, inFlowLpm, outFlowLpm → class (min/med/max)
 
@@ -13,8 +13,11 @@ To use live data from bridge later, call predict_single() directly.
 
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    GradientBoostingClassifier,
+)
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix
 import pickle
@@ -26,25 +29,38 @@ import json
 # ─────────────────────────────────────────
 DATASET_PATH = "water_potability_adapted.csv"
 MODEL_PATH   = "aqualoop_model.pkl"
-FEATURES     = ["turbidity", "tds", "temp", "ph", "inFlowLpm", "outFlowLpm"]
+RAW_FEATURES = ["turbidity", "tds", "temp", "ph", "inFlowLpm", "outFlowLpm"]
 TARGET       = "label"
 
 # ─────────────────────────────────────────
 # 1. LOAD DATA
 # ─────────────────────────────────────────
 print("=" * 55)
-print("  AquaLoop Water Quality Model Trainer")
+print("  AquaLoop Water Quality Model Trainer  v2")
 print("=" * 55)
 
 df = pd.read_csv(DATASET_PATH)
 print(f"\n✓ Loaded {len(df)} samples from {DATASET_PATH}")
 print(f"  Classes: {df[TARGET].value_counts().to_dict()}")
 
+# ─────────────────────────────────────────
+# 2. FEATURE ENGINEERING
+# ─────────────────────────────────────────
+print("\n  Engineering features...")
+
+df["tds_turb_ratio"] = df["tds"] / (df["turbidity"] + 0.01)
+df["flow_diff"]      = df["inFlowLpm"] - df["outFlowLpm"]
+df["ph_deviation"]   = (df["ph"] - 7.0).abs()
+df["temp_deviation"] = (df["temp"] - 25.0).abs()
+
+FEATURES = RAW_FEATURES + ["tds_turb_ratio", "flow_diff", "ph_deviation", "temp_deviation"]
+print(f"  Features ({len(FEATURES)}): {FEATURES}")
+
 X = df[FEATURES]
 y = df[TARGET]
 
 # ─────────────────────────────────────────
-# 2. ENCODE LABELS  min=0  med=1  max=2
+# 3. ENCODE LABELS  max=0  med=1  min=2
 # ─────────────────────────────────────────
 le = LabelEncoder()
 le.classes_ = np.array(["max", "med", "min"])  # fix alphabetical → logical order
@@ -54,7 +70,7 @@ LABEL_MAP = {i: c for i, c in enumerate(le.classes_)}
 print(f"\n  Label encoding: {LABEL_MAP}")
 
 # ─────────────────────────────────────────
-# 3. TRAIN / TEST SPLIT
+# 4. TRAIN / TEST SPLIT
 # ─────────────────────────────────────────
 X_train, X_test, y_train, y_test = train_test_split(
     X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
@@ -63,28 +79,40 @@ print(f"\n  Train: {len(X_train)} samples")
 print(f"  Test:  {len(X_test)} samples")
 
 # ─────────────────────────────────────────
-# 4. TRAIN RANDOM FOREST
+# 5. TRAIN MODEL
 # ─────────────────────────────────────────
-print("\n  Training Random Forest...")
+print("\n  Training Random Forest (accuracy-optimized + engineered features)...")
 
 model = RandomForestClassifier(
-    n_estimators=200,
+    n_estimators=500,
     max_depth=None,
     min_samples_split=2,
     random_state=42,
-    n_jobs=-1           # use all CPU cores
+    n_jobs=-1,
 )
 model.fit(X_train, y_train)
 print("  ✓ Training complete")
 
 # ─────────────────────────────────────────
-# 5. EVALUATE
+# 6. CROSS-VALIDATION
+# ─────────────────────────────────────────
+print("\n  Running 5-fold cross-validation...")
+cv_scores = cross_val_score(
+    RandomForestClassifier(
+        n_estimators=200, class_weight="balanced", random_state=42, n_jobs=-1
+    ),
+    X, y_encoded, cv=5, scoring="accuracy"
+)
+print(f"  CV Accuracy: {cv_scores.mean()*100:.1f}% ± {cv_scores.std()*100:.1f}%")
+
+# ─────────────────────────────────────────
+# 7. EVALUATE
 # ─────────────────────────────────────────
 y_pred = model.predict(X_test)
 accuracy = (y_pred == y_test).mean()
 
 print(f"\n{'─'*55}")
-print(f"  Accuracy: {accuracy*100:.1f}%")
+print(f"  Test Accuracy: {accuracy*100:.1f}%")
 print(f"{'─'*55}")
 
 print("\n  Classification Report:")
@@ -103,26 +131,32 @@ cm_df = pd.DataFrame(
 print(cm_df.to_string())
 
 # ─────────────────────────────────────────
-# 6. FEATURE IMPORTANCE
+# 8. FEATURE IMPORTANCE (from RF sub-model)
 # ─────────────────────────────────────────
 print(f"\n  Feature Importance (what drives the decision):")
+rf_fitted = model
 importances = sorted(
-    zip(FEATURES, model.feature_importances_),
+    zip(FEATURES, rf_fitted.feature_importances_),
     key=lambda x: x[1], reverse=True
 )
 for feat, imp in importances:
     bar = "█" * int(imp * 40)
-    print(f"    {feat:<12} {imp:.4f}  {bar}")
+    print(f"    {feat:<16} {imp:.4f}  {bar}")
 
 # ─────────────────────────────────────────
-# 7. SAVE MODEL
+# 9. SAVE MODEL
 # ─────────────────────────────────────────
 with open(MODEL_PATH, "wb") as f:
-    pickle.dump({"model": model, "label_encoder": le, "features": FEATURES}, f)
+    pickle.dump({
+        "model": model,
+        "label_encoder": le,
+        "features": FEATURES,
+        "raw_features": RAW_FEATURES,
+    }, f)
 print(f"\n  ✓ Model saved → {MODEL_PATH}")
 
 # ─────────────────────────────────────────
-# 7b. EXPORT DASHBOARD JSON
+# 9b. EXPORT DASHBOARD JSON
 # ─────────────────────────────────────────
 print("\n  Exporting dashboard JSON...")
 
@@ -165,7 +199,7 @@ cm_list = confusion_matrix(y_test, y_pred).tolist()
 feat_imp = [
     {"feature": f, "importance": round(float(imp), 4)}
     for f, imp in sorted(
-        zip(FEATURES, model.feature_importances_),
+        zip(FEATURES, rf_fitted.feature_importances_),
         key=lambda x: x[1], reverse=True
     )
 ]
@@ -177,16 +211,19 @@ class_dist = [
 ]
 
 dashboard_data = {
-    "modelName": "Random Forest (n=200)",
+    "modelName": "Random Forest (n=500, 10 features)",
     "datasetPath": DATASET_PATH,
     "totalSamples": len(df),
     "trainSamples": len(X_train),
     "testSamples": len(X_test),
     "accuracy": round(float(accuracy) * 100, 1),
+    "cvAccuracy": round(float(cv_scores.mean()) * 100, 1),
+    "cvStd": round(float(cv_scores.std()) * 100, 1),
     "features": FEATURES,
     "classLabels": list(le.classes_),
     "classificationReport": class_report,
     "confusionMatrix": cm_list,
+    "featureImortances": feat_imp,
     "featureImportances": feat_imp,
     "classDistribution": class_dist,
     "testPredictions": test_predictions,
@@ -199,7 +236,7 @@ with open(json_path, "w") as f:
 print(f"  ✓ Dashboard data → {json_path}")
 
 # ─────────────────────────────────────────
-# 8. PREDICT SINGLE SAMPLE
+# 10. PREDICT SINGLE SAMPLE
 #    (matches exact payload from bridge.py)
 # ─────────────────────────────────────────
 def predict_single(payload: dict) -> dict:
@@ -225,18 +262,29 @@ def predict_single(payload: dict) -> dict:
 
     m  = saved["model"]
     le = saved["label_encoder"]
+    feats = saved["features"]
 
-    X  = pd.DataFrame([[payload[f] for f in FEATURES]], columns=FEATURES)
+    # Engineer features on the fly
+    payload["tds_turb_ratio"] = payload["tds"] / (payload["turbidity"] + 0.01)
+    payload["flow_diff"] = payload["inFlowLpm"] - payload["outFlowLpm"]
+    payload["ph_deviation"] = abs(payload["ph"] - 7.0)
+    payload["temp_deviation"] = abs(payload["temp"] - 25.0)
+
+    X  = pd.DataFrame([[payload[f] for f in feats]], columns=feats)
     pred_idx  = m.predict(X)[0]
     pred_prob = m.predict_proba(X)[0]
     label     = le.classes_[pred_idx]
     confidence = round(float(max(pred_prob)) * 100, 1)
 
+    # Clean up added keys
+    for k in ["tds_turb_ratio", "flow_diff", "ph_deviation", "temp_deviation"]:
+        payload.pop(k, None)
+
     return {**payload, "class": label, "confidence": confidence}
 
 
 # ─────────────────────────────────────────
-# 9. QUICK DEMO — 3 SAMPLE PREDICTIONS
+# 11. QUICK DEMO — 3 SAMPLE PREDICTIONS
 # ─────────────────────────────────────────
 print(f"\n{'─'*55}")
 print("  Sample Predictions:")
