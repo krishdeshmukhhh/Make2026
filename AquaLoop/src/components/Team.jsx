@@ -1,9 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from 'react';
 import { Github, Linkedin } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const TEAM_MEMBERS = [
     {
@@ -41,50 +37,14 @@ const TEAM_MEMBERS = [
 ];
 
 export default function Team() {
-    const sectionRef = useRef(null);
-
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.from('.team-header-block > *', {
-                y: 30,
-                opacity: 0,
-                duration: 0.6,
-                stagger: 0.1,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: 'top 85%',
-                }
-            });
-
-            gsap.from('.team-card', {
-                y: 30,
-                opacity: 0,
-                duration: 0.6,
-                stagger: 0.08,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: 'top 85%',
-                }
-            });
-        }, sectionRef);
-
-        return () => ctx.revert();
-    }, []);
-
     return (
-        <section
-            id="team"
-            ref={sectionRef}
-            className="relative w-full bg-white pt-24 pb-32 z-20"
-        >
+        <section id="team" className="relative w-full bg-white pt-24 pb-32 z-20">
             <div className="max-w-6xl mx-auto px-6">
 
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
 
                     {/* Left Column: Heading Block */}
-                    <div className="team-header-block lg:w-[35%] flex flex-col pt-4">
+                    <div className="lg:w-[35%] flex flex-col pt-4">
                         <div className="font-data text-xs text-accent tracking-[0.2em] uppercase mb-6 flex items-center gap-3">
                             <span className="w-8 h-[1px] bg-accent/50 block"></span>
                             Control Crew
@@ -103,7 +63,7 @@ export default function Team() {
                         {TEAM_MEMBERS.map((member, idx) => (
                             <div
                                 key={idx}
-                                className="team-card group relative bg-white rounded-[2rem] border border-gray-200 p-6 shadow-md overflow-hidden hover:-translate-y-2 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/10 transition-all duration-500 ease-out flex flex-col h-full"
+                                className="group relative bg-white rounded-[2rem] border border-gray-200 p-6 shadow-md overflow-hidden hover:-translate-y-2 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/10 transition-all duration-500 ease-out flex flex-col h-full"
                             >
                                 {/* Top Row */}
                                 <div className="flex items-center gap-4 mb-5 relative z-10">

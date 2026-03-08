@@ -42,50 +42,6 @@ export default function Navbar() {
       </Link>
 
       <div className="hidden md:flex items-center gap-8 font-heading text-sm font-medium">
-        {pathname === "/" ? (
-          <>
-            <a
-              href="#features"
-              className="link-hover text-text-light/80 hover:text-text-light transition-colors"
-            >
-              Features
-            </a>
-            <a
-              href="#philosophy"
-              className="link-hover text-text-light/80 hover:text-text-light transition-colors"
-            >
-              Philosophy
-            </a>
-            <a
-              href="#protocol"
-              className="link-hover text-text-light/80 hover:text-text-light transition-colors"
-            >
-              Protocol
-            </a>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/#features"
-              className="link-hover text-text-light/80 hover:text-text-light transition-colors"
-            >
-              Features
-            </Link>
-            <Link
-              to="/#philosophy"
-              className="link-hover text-text-light/80 hover:text-text-light transition-colors"
-            >
-              Philosophy
-            </Link>
-            <Link
-              to="/#protocol"
-              className="link-hover text-text-light/80 hover:text-text-light transition-colors"
-            >
-              Protocol
-            </Link>
-          </>
-        )}
-        <div className="w-[1px] h-4 bg-text-light/20" />
         <Link
           to="/simulation"
           className={`link-hover transition-colors ${pathname === "/simulation" ? "text-accent" : "text-text-light/80 hover:text-text-light"}`}
@@ -107,12 +63,12 @@ export default function Navbar() {
       </div>
 
       {pathname === "/" ? (
-        <a
-          href="#demo"
+        <Link
+          to="/simulation"
           className="btn-magnetic bg-accent text-primary px-5 py-2 w-max rounded-full font-heading font-semibold text-sm transition-colors hover:bg-opacity-90"
         >
           See the live demo
-        </a>
+        </Link>
       ) : (
         <Link
           to="/simulation"

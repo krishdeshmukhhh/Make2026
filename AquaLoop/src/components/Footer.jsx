@@ -22,10 +22,10 @@ export default function Footer() {
                     </div>
 
                     <div className="md:col-span-3 flex flex-col gap-4 font-heading text-sm text-text-light/80">
-                        <h4 className="font-bold text-text-light/40 uppercase tracking-widest mb-3 text-xs">Company</h4>
-                        <a href="#" className="hover:text-accent transition-colors w-max">About Us</a>
-                        <a href="#" className="hover:text-accent transition-colors w-max">Careers</a>
-                        <a href="#" className="hover:text-accent transition-colors w-max">Contact</a>
+                        <h4 className="font-bold text-text-light/40 uppercase tracking-widest mb-3 text-xs">Dashboard</h4>
+                        <a href="/simulation" className="hover:text-accent transition-colors w-max">Simulation</a>
+                        <a href="/analytics" className="hover:text-accent transition-colors w-max">Analytics</a>
+                        <a href="/model" className="hover:text-accent transition-colors w-max">Model</a>
                     </div>
                 </div>
 
