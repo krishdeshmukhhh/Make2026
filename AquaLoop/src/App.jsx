@@ -5,22 +5,27 @@ import Home from "./pages/Home";
 import Simulation from "./pages/Simulation";
 import Analytics from "./pages/Analytics";
 import ModelDashboard from "./pages/ModelDashboard";
+import { AquaLoopProvider } from "./hooks/useAquaLoopData";
+import AlertToast from "./components/AlertToast";
 
 function App() {
   return (
     <Router>
-      <div className="w-full bg-background min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/simulation" element={<Simulation />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/model" element={<ModelDashboard />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
+      <AquaLoopProvider>
+        <div className="w-full bg-background min-h-screen flex flex-col">
+          <Navbar />
+          <AlertToast />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/simulation" element={<Simulation />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="/model" element={<ModelDashboard />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </AquaLoopProvider>
     </Router>
   );
 }

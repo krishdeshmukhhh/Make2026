@@ -69,3 +69,16 @@
     transform: translateY(0);
   }
 }
+
+/* Alert toast entrance animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

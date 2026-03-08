@@ -1,37 +1,40 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, createContext, useContext, createElement } from "react";
 
 const USE_MOCK_DATA = false; // Set to false to use WebSocket
 const WS_URL = "ws://localhost:8080/ws/aqualoop"; // Replace with actual backend WS URL
 
 const PROCESS_IDS = ["processA", "processB", "processC"];
 
+// Spike thresholds — if a reading exceeds these, fire an alert
+const SPIKE_THRESHOLDS = {
+  turbidity: { warn: 5.0, critical: 8.0, label: "Turbidity", unit: "NTU" },
+  tds: { warn: 400, critical: 700, label: "TDS", unit: "ppm" },
+  temp: { warn: 35, critical: 42, label: "Temperature", unit: "°C" },
+  ph_low: { warn: 5.5, critical: 4.5, label: "pH (Low)", unit: "" },
+  ph_high: { warn: 9.0, critical: 10.0, label: "pH (High)", unit: "" },
+};
+
 // Multi-feature water quality scoring (matches arduino_bridge.py)
-// Uses WHO-aligned thresholds for realistic classification.
 function determineClass(turbidity, tds, temp, ph) {
   let score = 0;
 
-  // Turbidity (40% weight)
   if (turbidity < 1.0) score += 40;
   else if (turbidity < 4.0) score += 25;
   else if (turbidity < 7.0) score += 10;
 
-  // TDS (25% weight) — WHO considers <500 safe
   if (tds < 300) score += 25;
   else if (tds < 500) score += 18;
   else if (tds < 800) score += 8;
 
-  // Temperature (15% weight)
   if (temp >= 15 && temp <= 30) score += 15;
   else if (temp >= 10 && temp <= 40) score += 8;
 
-  // pH (20% weight)
   if (ph >= 6.5 && ph <= 8.5) score += 20;
   else if (ph >= 5.5 && ph <= 9.5) score += 10;
 
-  // Classify
-  if (score >= 70) return "min"; // High-grade Reuse
-  if (score >= 40) return "med"; // Utility Loop
-  return "max"; // Treatment / Discharge
+  if (score >= 70) return "min";
+  if (score >= 40) return "med";
+  return "max";
 }
 
 let globalSimulatorState = {
@@ -49,16 +52,12 @@ export function generateMockReading(processId) {
   const turbidity = Math.max(0, baseTurbidity + (Math.random() * 2 - 1));
   const tds = Math.max(0, Math.floor(baseTDS + (Math.random() * 40 - 20)));
 
-  // Simulate batch logic: tank fills up to ~100L then empties and increments batch
   const inFlowLpm = parseFloat((0.8 + Math.random() * 0.2).toFixed(2));
   const outFlowLpm = parseFloat((0.8 + Math.random() * 0.2).toFixed(2));
 
-  // Assuming this function is called roughly every second during live gen
-  // We add incoming flow to the simulated tank
   globalSimulatorState[processId].volume += inFlowLpm / 60;
 
   if (globalSimulatorState[processId].volume >= 5.0) {
-    // Keep the demo quick (5L per batch)
     globalSimulatorState[processId].volume = 0;
     globalSimulatorState[processId].batchNo += 1;
   }
@@ -80,13 +79,60 @@ export function generateMockReading(processId) {
   };
 }
 
-export function useAquaLoopData(maxHistory = 100) {
+// ─── Spike detection ───
+
+function detectSpikes(reading) {
+  const alerts = [];
+
+  if (reading.turbidity >= SPIKE_THRESHOLDS.turbidity.critical) {
+    alerts.push({ severity: "critical", metric: "Turbidity", value: reading.turbidity, unit: "NTU", processId: reading.processId });
+  } else if (reading.turbidity >= SPIKE_THRESHOLDS.turbidity.warn) {
+    alerts.push({ severity: "warning", metric: "Turbidity", value: reading.turbidity, unit: "NTU", processId: reading.processId });
+  }
+
+  if (reading.tds >= SPIKE_THRESHOLDS.tds.critical) {
+    alerts.push({ severity: "critical", metric: "TDS", value: reading.tds, unit: "ppm", processId: reading.processId });
+  } else if (reading.tds >= SPIKE_THRESHOLDS.tds.warn) {
+    alerts.push({ severity: "warning", metric: "TDS", value: reading.tds, unit: "ppm", processId: reading.processId });
+  }
+
+  if (reading.temp >= SPIKE_THRESHOLDS.temp.critical) {
+    alerts.push({ severity: "critical", metric: "Temp", value: reading.temp, unit: "°C", processId: reading.processId });
+  } else if (reading.temp >= SPIKE_THRESHOLDS.temp.warn) {
+    alerts.push({ severity: "warning", metric: "Temp", value: reading.temp, unit: "°C", processId: reading.processId });
+  }
+
+  if (reading.ph <= SPIKE_THRESHOLDS.ph_low.critical) {
+    alerts.push({ severity: "critical", metric: "pH", value: reading.ph, unit: "", processId: reading.processId });
+  } else if (reading.ph <= SPIKE_THRESHOLDS.ph_low.warn) {
+    alerts.push({ severity: "warning", metric: "pH", value: reading.ph, unit: "", processId: reading.processId });
+  } else if (reading.ph >= SPIKE_THRESHOLDS.ph_high.critical) {
+    alerts.push({ severity: "critical", metric: "pH", value: reading.ph, unit: "", processId: reading.processId });
+  } else if (reading.ph >= SPIKE_THRESHOLDS.ph_high.warn) {
+    alerts.push({ severity: "warning", metric: "pH", value: reading.ph, unit: "", processId: reading.processId });
+  }
+
+  return alerts;
+}
+
+// ─── Context-based provider so data persists across route changes ───
+
+const AquaLoopContext = createContext(null);
+
+let alertIdCounter = 0;
+
+export function AquaLoopProvider({ children, maxHistory = 100 }) {
   const [latestByProcess, setLatestByProcess] = useState({});
   const [historyByProcess, setHistoryByProcess] = useState({
     processA: [],
     processB: [],
     processC: [],
   });
+  const [alerts, setAlerts] = useState([]);
+
+  const dismissAlert = useCallback((id) => {
+    setAlerts((prev) => prev.filter((a) => a.id !== id));
+  }, []);
 
   const handleNewReading = useCallback(
     (reading) => {
@@ -103,13 +149,23 @@ export function useAquaLoopData(maxHistory = 100) {
           [reading.processId]: updatedHistory,
         };
       });
+
+      // Detect spikes and create alerts
+      const newSpikes = detectSpikes(reading);
+      if (newSpikes.length > 0) {
+        const timestamped = newSpikes.map((spike) => ({
+          ...spike,
+          id: ++alertIdCounter,
+          timestamp: reading.timestamp,
+        }));
+        setAlerts((prev) => [...timestamped, ...prev].slice(0, 20)); // keep last 20
+      }
     },
     [maxHistory],
   );
 
   useEffect(() => {
     if (USE_MOCK_DATA) {
-      // Initialize with some historical data for better initial charts
       const initialHistory = { processA: [], processB: [], processC: [] };
       const initialLatest = {};
       const now = Date.now();
@@ -117,7 +173,7 @@ export function useAquaLoopData(maxHistory = 100) {
       PROCESS_IDS.forEach((pid) => {
         for (let i = maxHistory; i > 0; i--) {
           const reading = generateMockReading(pid);
-          reading.timestamp = now - i * 2000; // 2 seconds apart
+          reading.timestamp = now - i * 2000;
           initialHistory[pid].push(reading);
         }
         initialLatest[pid] =
@@ -127,12 +183,11 @@ export function useAquaLoopData(maxHistory = 100) {
       setHistoryByProcess(initialHistory);
       setLatestByProcess(initialLatest);
 
-      // Start live generation
       const interval = setInterval(() => {
         const randomProcess =
           PROCESS_IDS[Math.floor(Math.random() * PROCESS_IDS.length)];
         handleNewReading(generateMockReading(randomProcess));
-      }, 1000); // New reading every second for one of the processes
+      }, 1000);
 
       return () => clearInterval(interval);
     } else {
@@ -167,14 +222,13 @@ export function useAquaLoopData(maxHistory = 100) {
       return () => {
         if (reconnectTimer) clearTimeout(reconnectTimer);
         if (ws) {
-          ws.onclose = null; // Prevent reconnect on intentional unmount
+          ws.onclose = null;
           ws.close();
         }
       };
     }
   }, [handleNewReading, maxHistory]);
 
-  // Derived aggregations for analytics
   const getAggregatedStats = (processId) => {
     const history = historyByProcess[processId] || [];
     if (history.length === 0)
@@ -183,11 +237,10 @@ export function useAquaLoopData(maxHistory = 100) {
     let totalInVolume = 0;
     const classVolumes = { min: 0, med: 0, max: 0 };
 
-    // Simple integration: volume = flow_rate (L/min) * time_delta (minutes)
     for (let i = 1; i < history.length; i++) {
       const prev = history[i - 1];
       const curr = history[i];
-      const timeDeltaMin = (curr.timestamp - prev.timestamp) / 1000 / 60; // in minutes
+      const timeDeltaMin = (curr.timestamp - prev.timestamp) / 1000 / 60;
 
       const volumeIn = curr.inFlowLpm * timeDeltaMin;
       totalInVolume += volumeIn;
@@ -201,11 +254,23 @@ export function useAquaLoopData(maxHistory = 100) {
     return { totalInVolume, classVolumes };
   };
 
-  return {
+  const value = {
     latestByProcess,
     historyByProcess,
     getAggregatedStats,
     availableProcesses: PROCESS_IDS,
-    isConnected: USE_MOCK_DATA ? true : false, // Real connection state would be managed in the websocket block
+    isConnected: USE_MOCK_DATA ? true : false,
+    alerts,
+    dismissAlert,
   };
+
+  return createElement(AquaLoopContext.Provider, { value }, children);
+}
+
+export function useAquaLoopData() {
+  const ctx = useContext(AquaLoopContext);
+  if (!ctx) {
+    throw new Error("useAquaLoopData must be used within an <AquaLoopProvider>");
+  }
+  return ctx;
 }
