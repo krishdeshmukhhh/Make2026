@@ -7,7 +7,7 @@ const TEAM_MEMBERS = [
         role: "Software",
         focus: "Landing Page and Dashboard",
         tags: ["Front-End", "AI", "Dashboard"],
-        avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80",
+        avatarUrl: "https://media.licdn.com/dms/image/v2/D5603AQEVurc7BBYvBw/profile-displayphoto-scale_200_200/B56ZwfTRyrHcAc-/0/1770051674019?e=1774483200&v=beta&t=a6JCKqQI16w8ODVSWqM8zFkxJU4KmtmYRdLcYEGg5g8",
         links: { github: "#", linkedin: "#" }
     },
     {
@@ -15,23 +15,23 @@ const TEAM_MEMBERS = [
         role: "Software",
         focus: "AI Model",
         tags: ["Front-End", "AI", "Dashboard"],
-        avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&q=80",
+        avatarUrl: "https://media.licdn.com/dms/image/v2/D5603AQFr5dlPu_UYqg/profile-displayphoto-scale_400_400/B56Zn93VCIJkAg-/0/1760900764215?e=2147483647&v=beta&t=fYnVSnZCkpnyUz_RFKHZStCltvHDappiS0C_Q1BdcNw",
         links: { github: "#", linkedin: "#" }
     },
     {
         name: "Khushi Karanpuria",
-        role: "Embedded Hardware",
-        focus: "Develops the C++ sensor firmware and high-frequency WebSocket bridges.",
-        tags: ["C++", "IoT / Sensors", "Python"],
-        avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop&q=80",
+        role: "Hardware",
+        focus: "Connect the sensors and get live data",
+        tags: ["Sensors", "Hardware"],
+        avatarUrl: "https://media.licdn.com/dms/image/v2/D4E03AQFDPyO9DY-6Iw/profile-displayphoto-scale_200_200/B4EZnqJzxXGoAY-/0/1760570064458?e=1774483200&v=beta&t=Ae0RjK_r8FXZ0MSla_tSHoL2HrqQnF4-1ackcWwc-aw",
         links: { github: "#", linkedin: "#" }
     },
     {
         name: "Gavin Sun",
-        role: "Machine Learning",
-        focus: "Trains the predictive models that dynamically anticipate water purity thresholds.",
-        tags: ["PyTorch", "Data Science", "Telemetry"],
-        avatarUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&q=80",
+        role: "Hardware",
+        focus: "Create the physical prototype",
+        tags: ["Hardware"],
+        avatarUrl: "https://media.licdn.com/dms/image/v2/D4E03AQHH7ECwOAlx7Q/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1727197023864?e=1774483200&v=beta&t=aPPrnp3kinILFJNsdijpwS02gCScx-SNO9W-XJDAgl8",
         links: { github: "#", linkedin: "#" }
     }
 ];

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, createContext, useContext, createElement } from "react";
 
-const USE_MOCK_DATA = false; // Set to false to use WebSocket
+const USE_MOCK_DATA = true; // Set to false to use WebSocket
 const WS_URL = "ws://localhost:8080/ws/aqualoop"; // Replace with actual backend WS URL
 
 const PROCESS_IDS = ["processA", "processB", "processC"];
@@ -127,7 +127,7 @@ function notifyBrowser(alert) {
         tag: `aqualoop-${alert.id}`,
         requireInteraction: alert.severity === "critical",
       });
-    } catch (_) {}
+    } catch (_) { }
     return;
   }
   if (Notification.permission === "default") {
@@ -138,7 +138,7 @@ function notifyBrowser(alert) {
             body: `${alert.metric} ${alert.severity}: ${alert.value}${alert.unit}`,
             tag: `aqualoop-${alert.id}`,
           });
-        } catch (_) {}
+        } catch (_) { }
       }
     });
   }
