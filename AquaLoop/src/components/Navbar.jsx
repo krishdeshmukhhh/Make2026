@@ -64,7 +64,7 @@ export default function Navbar() {
 
       {pathname === "/" ? (
         <Link
-          to="/simulation"
+          to="/demo"
           className="btn-magnetic bg-accent text-primary px-5 py-2 w-max rounded-full font-heading font-semibold text-sm transition-colors hover:bg-opacity-90"
         >
           See the live demo
