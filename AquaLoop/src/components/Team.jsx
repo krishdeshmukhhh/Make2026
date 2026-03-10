@@ -1,116 +1,141 @@
-import React from 'react';
-import { Github, Linkedin } from 'lucide-react';
+import React from "react";
+import { Github, Linkedin } from "lucide-react";
 
 const TEAM_MEMBERS = [
-    {
-        name: "Krish Deshmukh",
-        role: "Software",
-        focus: "Landing Page and Dashboard",
-        tags: ["Front-End", "AI", "Dashboard"],
-        avatarUrl: "https://media.licdn.com/dms/image/v2/D5603AQEVurc7BBYvBw/profile-displayphoto-scale_200_200/B56ZwfTRyrHcAc-/0/1770051674019?e=1774483200&v=beta&t=a6JCKqQI16w8ODVSWqM8zFkxJU4KmtmYRdLcYEGg5g8",
-        links: { github: "#", linkedin: "#" }
+  {
+    name: "Krish Deshmukh",
+    role: "Software",
+    focus: "Landing Page and Dashboard",
+    tags: ["Front-End", "AI", "Dashboard"],
+    avatarUrl:
+      "https://media.licdn.com/dms/image/v2/D5603AQEVurc7BBYvBw/profile-displayphoto-scale_200_200/B56ZwfTRyrHcAc-/0/1770051674019?e=1774483200&v=beta&t=a6JCKqQI16w8ODVSWqM8zFkxJU4KmtmYRdLcYEGg5g8",
+    links: { github: "#", linkedin: "#" },
+  },
+  {
+    name: "Kuldeep Debnath",
+    role: "Software",
+    focus: "AI Model",
+    tags: ["Front-End", "AI", "Dashboard"],
+    avatarUrl:
+      "https://media.licdn.com/dms/image/v2/D5603AQFr5dlPu_UYqg/profile-displayphoto-scale_400_400/B56Zn93VCIJkAg-/0/1760900764215?e=2147483647&v=beta&t=fYnVSnZCkpnyUz_RFKHZStCltvHDappiS0C_Q1BdcNw",
+    links: {
+      github: "#",
+      linkedin: "https://www.linkedin.com/in/kuldeep-debnath/",
     },
-    {
-        name: "Kuldeep Debnath",
-        role: "Software",
-        focus: "AI Model",
-        tags: ["Front-End", "AI", "Dashboard"],
-        avatarUrl: "https://media.licdn.com/dms/image/v2/D5603AQFr5dlPu_UYqg/profile-displayphoto-scale_400_400/B56Zn93VCIJkAg-/0/1760900764215?e=2147483647&v=beta&t=fYnVSnZCkpnyUz_RFKHZStCltvHDappiS0C_Q1BdcNw",
-        links: { github: "#", linkedin: "#" }
-    },
-    {
-        name: "Khushi Karanpuria",
-        role: "Hardware",
-        focus: "Connect the sensors and get live data",
-        tags: ["Sensors", "Hardware"],
-        avatarUrl: "https://media.licdn.com/dms/image/v2/D4E03AQFDPyO9DY-6Iw/profile-displayphoto-scale_200_200/B4EZnqJzxXGoAY-/0/1760570064458?e=1774483200&v=beta&t=Ae0RjK_r8FXZ0MSla_tSHoL2HrqQnF4-1ackcWwc-aw",
-        links: { github: "#", linkedin: "#" }
-    },
-    {
-        name: "Gavin Sun",
-        role: "Hardware",
-        focus: "Create the physical prototype",
-        tags: ["Hardware"],
-        avatarUrl: "https://media.licdn.com/dms/image/v2/D4E03AQHH7ECwOAlx7Q/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1727197023864?e=1774483200&v=beta&t=aPPrnp3kinILFJNsdijpwS02gCScx-SNO9W-XJDAgl8",
-        links: { github: "#", linkedin: "#" }
-    }
+  },
+  {
+    name: "Khushi Karanpuria",
+    role: "Hardware",
+    focus: "Connect the sensors and get live data",
+    tags: ["Sensors", "Hardware"],
+    avatarUrl:
+      "https://media.licdn.com/dms/image/v2/D4E03AQFDPyO9DY-6Iw/profile-displayphoto-scale_200_200/B4EZnqJzxXGoAY-/0/1760570064458?e=1774483200&v=beta&t=Ae0RjK_r8FXZ0MSla_tSHoL2HrqQnF4-1ackcWwc-aw",
+    links: { github: "#", linkedin: "#" },
+  },
+  {
+    name: "Gavin Sun",
+    role: "Hardware",
+    focus: "Create the physical prototype",
+    tags: ["Hardware"],
+    avatarUrl:
+      "https://media.licdn.com/dms/image/v2/D4E03AQHH7ECwOAlx7Q/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1727197023864?e=1774483200&v=beta&t=aPPrnp3kinILFJNsdijpwS02gCScx-SNO9W-XJDAgl8",
+    links: { github: "#", linkedin: "#" },
+  },
 ];
 
 export default function Team() {
-    return (
-        <section id="team" className="relative w-full bg-white pt-24 pb-32 z-20">
-            <div className="max-w-6xl mx-auto px-6">
-
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-
-                    {/* Left Column: Heading Block */}
-                    <div className="lg:w-[35%] flex flex-col pt-4">
-                        <div className="font-data text-xs text-accent tracking-[0.2em] uppercase mb-6 flex items-center gap-3">
-                            <span className="w-8 h-[1px] bg-accent/50 block"></span>
-                            Control Crew
-                        </div>
-                        <h2 className="font-heading font-bold text-4xl md:text-5xl text-black tracking-tight mb-6 leading-tight">
-                            The operators behind the{' '}
-                            <span className="font-drama italic text-accent pr-1">system.</span>
-                        </h2>
-                        <p className="font-heading text-black/60 text-lg leading-relaxed max-w-sm">
-                            Engineered for operational rigor and absolute reliability. Bringing industrial precision and human craft to water intelligence.
-                        </p>
-                    </div>
-
-                    {/* Right Column: Team Grid */}
-                    <div className="lg:w-[65%] grid grid-cols-1 md:grid-cols-2 gap-6 relative">
-                        {TEAM_MEMBERS.map((member, idx) => (
-                            <div
-                                key={idx}
-                                className="group relative bg-white rounded-[2rem] border border-gray-200 p-6 shadow-md overflow-hidden hover:-translate-y-2 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/10 transition-all duration-500 ease-out flex flex-col h-full"
-                            >
-                                {/* Top Row */}
-                                <div className="flex items-center gap-4 mb-5 relative z-10">
-                                    <div className="w-14 h-14 rounded-2xl overflow-hidden border border-gray-200 group-hover:border-accent/40 group-hover:scale-105 transition-all duration-500 shadow-sm flex-shrink-0">
-                                        <img src={member.avatarUrl} alt={member.name} className="w-full h-full object-cover" />
-                                    </div>
-                                    <div className="flex flex-col group-hover:-translate-y-[1px] transition-transform duration-500">
-                                        <h3 className="font-heading font-bold text-lg text-black">{member.name}</h3>
-                                        <span className="font-data text-[10px] text-accent tracking-widest uppercase mt-0.5">{member.role}</span>
-                                    </div>
-                                </div>
-
-                                {/* Tags */}
-                                <div className="flex flex-wrap gap-2 mb-6 relative z-10">
-                                    {member.tags.map((tag, tIdx) => (
-                                        <span key={tIdx} className="px-2.5 py-1 text-[9px] uppercase font-data tracking-widest bg-gray-100 text-gray-600 border border-gray-200 rounded-full group-hover:border-accent/30 group-hover:bg-accent/5 group-hover:text-black transition-colors duration-300">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                {/* Focus Statement */}
-                                <div className="mt-auto relative z-10">
-                                    <p className="font-heading text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-4 group-hover:text-black transition-colors duration-300">
-                                        {member.focus}
-                                    </p>
-                                </div>
-
-                                {/* Hover Icons */}
-                                <div className="absolute top-6 right-6 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-x-4 group-hover:translate-x-0">
-                                    {member.links?.github && (
-                                        <a href={member.links.github} className="text-gray-400 hover:text-accent transition-colors">
-                                            <Github size={16} strokeWidth={2} />
-                                        </a>
-                                    )}
-                                    {member.links?.linkedin && (
-                                        <a href={member.links.linkedin} className="text-gray-400 hover:text-accent transition-colors">
-                                            <Linkedin size={16} strokeWidth={2} />
-                                        </a>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                </div>
+  return (
+    <section id="team" className="relative w-full bg-white pt-24 pb-32 z-20">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+          {/* Left Column: Heading Block */}
+          <div className="lg:w-[35%] flex flex-col pt-4">
+            <div className="font-data text-xs text-accent tracking-[0.2em] uppercase mb-6 flex items-center gap-3">
+              <span className="w-8 h-[1px] bg-accent/50 block"></span>
+              Control Crew
             </div>
-        </section>
-    );
+            <h2 className="font-heading font-bold text-4xl md:text-5xl text-black tracking-tight mb-6 leading-tight">
+              The operators behind the{" "}
+              <span className="font-drama italic text-accent pr-1">
+                system.
+              </span>
+            </h2>
+            <p className="font-heading text-black/60 text-lg leading-relaxed max-w-sm">
+              Engineered for operational rigor and absolute reliability.
+              Bringing industrial precision and human craft to water
+              intelligence.
+            </p>
+          </div>
+
+          {/* Right Column: Team Grid */}
+          <div className="lg:w-[65%] grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+            {TEAM_MEMBERS.map((member, idx) => (
+              <div
+                key={idx}
+                className="group relative bg-white rounded-[2rem] border border-gray-200 p-6 shadow-md overflow-hidden hover:-translate-y-2 hover:border-accent/40 hover:shadow-xl hover:shadow-accent/10 transition-all duration-500 ease-out flex flex-col h-full"
+              >
+                {/* Top Row */}
+                <div className="flex items-center gap-4 mb-5 relative z-10">
+                  <div className="w-14 h-14 rounded-2xl overflow-hidden border border-gray-200 group-hover:border-accent/40 group-hover:scale-105 transition-all duration-500 shadow-sm flex-shrink-0">
+                    <img
+                      src={member.avatarUrl}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col group-hover:-translate-y-[1px] transition-transform duration-500">
+                    <h3 className="font-heading font-bold text-lg text-black">
+                      {member.name}
+                    </h3>
+                    <span className="font-data text-[10px] text-accent tracking-widest uppercase mt-0.5">
+                      {member.role}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mb-6 relative z-10">
+                  {member.tags.map((tag, tIdx) => (
+                    <span
+                      key={tIdx}
+                      className="px-2.5 py-1 text-[9px] uppercase font-data tracking-widest bg-gray-100 text-gray-600 border border-gray-200 rounded-full group-hover:border-accent/30 group-hover:bg-accent/5 group-hover:text-black transition-colors duration-300"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Focus Statement */}
+                <div className="mt-auto relative z-10">
+                  <p className="font-heading text-sm text-gray-500 leading-relaxed border-t border-gray-100 pt-4 group-hover:text-black transition-colors duration-300">
+                    {member.focus}
+                  </p>
+                </div>
+
+                {/* Hover Icons */}
+                <div className="absolute top-6 right-6 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-x-4 group-hover:translate-x-0">
+                  {member.links?.github && (
+                    <a
+                      href={member.links.github}
+                      className="text-gray-400 hover:text-accent transition-colors"
+                    >
+                      <Github size={16} strokeWidth={2} />
+                    </a>
+                  )}
+                  {member.links?.linkedin && (
+                    <a
+                      href={member.links.linkedin}
+                      className="text-gray-400 hover:text-accent transition-colors"
+                    >
+                      <Linkedin size={16} strokeWidth={2} />
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

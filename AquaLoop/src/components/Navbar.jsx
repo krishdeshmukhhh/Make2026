@@ -65,16 +65,16 @@ export default function Navbar() {
       {pathname === "/" ? (
         <Link
           to="/demo"
-          className="btn-magnetic bg-accent text-primary px-5 py-2 w-max rounded-full font-heading font-semibold text-sm transition-colors hover:bg-opacity-90"
+          className="btn-magnetic bg-accent text-white px-5 py-2 w-max rounded-full font-heading font-semibold text-sm transition-colors hover:bg-opacity-90"
         >
-          See the live demo
+          View the Demo
         </Link>
       ) : (
         <Link
-          to="/simulation"
-          className="btn-magnetic bg-accent text-primary px-5 py-2 w-max rounded-full font-heading font-semibold text-sm transition-colors hover:bg-opacity-90"
+          to="/demo"
+          className="btn-magnetic bg-white text-primary px-5 py-2 w-max rounded-full font-heading font-semibold text-sm transition-colors hover:bg-opacity-90"
         >
-          Live Data View
+          Demo
         </Link>
       )}
     </nav>
